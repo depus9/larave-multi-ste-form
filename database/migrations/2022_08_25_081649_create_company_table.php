@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('company_profile', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
             /**
              * Step 1
              */
             $table->string('company_status');
+            $table->string('accreditation_level');
             $table->string('company_is_premium');
             $table->string('company_register_date');
             $table->string('company_expiry_date');
@@ -48,6 +49,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company_profile');
+        Schema::dropIfExists('companies');
     }
 };

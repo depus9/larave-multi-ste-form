@@ -24,7 +24,7 @@ class Company extends Model
 
     protected $fillable = [
         'company_name', 'company_address', 'company_email', 'company_phone', 'contact_name', 'contact_email', 'contact_phone', 'company_status',
-        'company_is_premium', 'company_register_date', 'company_expiry_date', 'company_renewal_date'
+        'company_is_premium', 'accreditation_level', 'company_register_date', 'company_expiry_date', 'company_renewal_date'
 
     ];
 }

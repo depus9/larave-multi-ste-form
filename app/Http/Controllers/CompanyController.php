@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Company;
 
 class CompanyController extends Controller
 {
@@ -20,11 +21,9 @@ class CompanyController extends Controller
 
     {
 
-        $companys = Company::all();
+        $company_profile = Company::all();
 
-
-
-        return view('company_profile.index', compact('company_profile'));
+        return view('company.index', compact('company_profile'));
     }
 
 
@@ -47,7 +46,7 @@ class CompanyController extends Controller
 
 
 
-        return view('company_profile.create-step-one', compact('company_profile'));
+        return view('company.step-1', compact('company'));
     }
 
 
@@ -70,11 +69,15 @@ class CompanyController extends Controller
 
         $validatedData = $request->validate([
 
-            'name' => 'required|unique:company_profile',
+            'company_is_premium' => '',
 
-            'amount' => 'required|numeric',
 
-            'description' => 'required',
+            'company_status' => '',
+
+            'accreditation_level' => '',
+            'company_register_date' => 'required',
+            'company_expiry_date' => 'required',
+            'company_renewal_date' => 'required'
 
         ]);
 
@@ -84,13 +87,20 @@ class CompanyController extends Controller
 
             $company = new Company();
 
+
             $company->fill($validatedData);
 
             $request->session()->put('company_profile', $company);
         } else {
-
+            $isChecked = $request->has('company_is_premium');
             $company = $request->session()->get('company_profile');
+            if (!$request->has('company_is_premium')) {
+                $company->company_is_premium = '';
+            }
 
+            if (!$request->has('accreditation_level')) {
+                $company->accreditation_level = array();
+            }
             $company->fill($validatedData);
 
             $request->session()->put('company_profile', $company);
@@ -98,7 +108,7 @@ class CompanyController extends Controller
 
 
 
-        return redirect()->route('company_profile.create.step.two');
+        return redirect()->route('company.step.2');
     }
 
 
@@ -121,7 +131,7 @@ class CompanyController extends Controller
 
 
 
-        return view('company_profile.create-step-two', compact('company_profile'));
+        return view('company.step-2', compact('company'));
     }
 
 
@@ -142,9 +152,10 @@ class CompanyController extends Controller
 
         $validatedData = $request->validate([
 
-            'stock' => 'required',
+            'contact_name' => 'required',
 
-            'status' => 'required',
+            'contact_email' => 'required|email',
+            'contact_phone' => 'required:numerical',
 
         ]);
 
@@ -158,7 +169,7 @@ class CompanyController extends Controller
 
 
 
-        return redirect()->route('company_profile.create.step.three');
+        return redirect()->route('company.step.3');
     }
 
 
@@ -181,7 +192,7 @@ class CompanyController extends Controller
 
 
 
-        return view('company_profile.create-step-three', compact('company_profile'));
+        return view('company.step-3', compact('company'));
     }
 
 
@@ -195,12 +206,49 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
 
      */
-
     public function postCreateStepThree(Request $request)
+    {
+        $validatedData = $request->validate([
+
+            'company_name' => 'required',
+            'company_email' => 'required|email',
+            'company_phone' => 'required:numerical',
+            'company_address' => 'required',
+
+        ]);
+
+
+
+        $company = $request->session()->get('company_profile');
+
+        $company->fill($validatedData);
+
+        $request->session()->put('company_profile', $company);
+        //redirect to final step
+        return redirect()->route('company.step.4');
+    }
+    /**
+     * Step 4
+     */
+    public function createStepFour(Request $request)
 
     {
 
         $company = $request->session()->get('company_profile');
+
+
+
+        return view('company.step-4', compact('company'));
+    }
+    public function postCreateStepFour(Request $request)
+
+    {
+
+        $company = $request->session()->get('company_profile');
+        if (is_array($company->accreditation_level)) {
+            $company->accreditation_level = serialize($company->accreditation_level);
+        }
+
 
         $company->save();
 
@@ -210,6 +258,6 @@ class CompanyController extends Controller
 
 
 
-        return redirect()->route('company_profile.index');
+        return redirect()->route('company.index');
     }  //
 }
