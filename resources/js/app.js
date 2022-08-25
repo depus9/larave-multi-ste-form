@@ -24,8 +24,8 @@ Vue.use(Vuelidate);
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 Vue.component(
-  "Datetemplate",
-  require("./components/Datetemplates.vue").default
+  "MultiStepForm",
+  require("./components/Company/MultiStepForm.vue").default
 );
 /**
  * Next, we will create a fresh Vue application instance and attach it to

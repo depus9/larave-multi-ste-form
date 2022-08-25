@@ -7,6 +7,7 @@ use App\Company;
 
 class CompanyController extends Controller
 {
+    protected $company;
     /**
 
      * Display a listing of the prducts.
@@ -16,6 +17,10 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
 
      */
+    public function __construct(Company $company)
+    {
+        $this->company = $company;
+    }
 
     public function index()
 
@@ -38,7 +43,7 @@ class CompanyController extends Controller
 
      */
 
-    public function createStepOne(Request $request)
+    public function createFirstStep(Request $request)
 
     {
 
@@ -62,202 +67,37 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
 
      */
-
-    public function postCreateStepOne(Request $request)
+    public function postCompanyData(Request $request)
 
     {
+        // var_dump($request->all());
+        // die;
 
-        $validatedData = $request->validate([
-
-            'company_is_premium' => '',
-
-
-            'company_status' => '',
-
-            'accreditation_level' => '',
-            'company_register_date' => 'required',
-            'company_expiry_date' => 'required',
-            'company_renewal_date' => 'required'
-
-        ]);
-
-
-
-        if (empty($request->session()->get('company_profile'))) {
-
-            $company = new Company();
-
-
-            $company->fill($validatedData);
-
-            $request->session()->put('company_profile', $company);
-        } else {
-            $isChecked = $request->has('company_is_premium');
-            $company = $request->session()->get('company_profile');
-            if (!$request->has('company_is_premium')) {
-                $company->company_is_premium = '';
+        $company = $request->all();
+        if (is_array($company['accreditation_level'])) {
+            if (count($company['accreditation_level'])) {
+                $company['accreditation_level'] = serialize($company['accreditation_level']);
+            } else {
+                $company['accreditation_level'] = 'undefined';
             }
-
-            if (!$request->has('accreditation_level')) {
-                $company->accreditation_level = array();
-            }
-            $company->fill($validatedData);
-
-            $request->session()->put('company_profile', $company);
+        }
+        if (!$company['company_status']) {
+            $company['company_status'] = 'undefined';
+        }
+        if (!$company['company_is_premium']) {
+            $company['company_is_premium'] = 'undefined';
         }
 
 
 
-        return redirect()->route('company.step.2');
-    }
-
-
-
-    /**
-
-     * Show the step One Form for creating a new company.
-
-     *
-
-     * @return \Illuminate\Http\Response
-
-     */
-
-    public function createStepTwo(Request $request)
-
-    {
-
-        $company = $request->session()->get('company_profile');
-
-
-
-        return view('company.step-2', compact('company'));
-    }
-
-
-
-    /**
-
-     * Show the step One Form for creating a new company.
-
-     *
-
-     * @return \Illuminate\Http\Response
-
-     */
-
-    public function postCreateStepTwo(Request $request)
-
-    {
-
-        $validatedData = $request->validate([
-
-            'contact_name' => 'required',
-
-            'contact_email' => 'required|email',
-            'contact_phone' => 'required:numerical',
-
-        ]);
-
-
-
-        $company = $request->session()->get('company_profile');
-
-        $company->fill($validatedData);
-
-        $request->session()->put('company_profile', $company);
-
-
-
-        return redirect()->route('company.step.3');
-    }
-
-
-
-    /**
-
-     * Show the step One Form for creating a new company.
-
-     *
-
-     * @return \Illuminate\Http\Response
-
-     */
-
-    public function createStepThree(Request $request)
-
-    {
-
-        $company = $request->session()->get('company_profile');
-
-
-
-        return view('company.step-3', compact('company'));
-    }
-
-
-
-    /**
-
-     * Show the step One Form for creating a new company.
-
-     *
-
-     * @return \Illuminate\Http\Response
-
-     */
-    public function postCreateStepThree(Request $request)
-    {
-        $validatedData = $request->validate([
-
-            'company_name' => 'required',
-            'company_email' => 'required|email',
-            'company_phone' => 'required:numerical',
-            'company_address' => 'required',
-
-        ]);
-
-
-
-        $company = $request->session()->get('company_profile');
-
-        $company->fill($validatedData);
-
-        $request->session()->put('company_profile', $company);
-        //redirect to final step
-        return redirect()->route('company.step.4');
-    }
-    /**
-     * Step 4
-     */
-    public function createStepFour(Request $request)
-
-    {
-
-        $company = $request->session()->get('company_profile');
-
-
-
-        return view('company.step-4', compact('company'));
-    }
-    public function postCreateStepFour(Request $request)
-
-    {
-
-        $company = $request->session()->get('company_profile');
-        if (is_array($company->accreditation_level)) {
-            $company->accreditation_level = serialize($company->accreditation_level);
+        if ($this->company->create($company)) {
+            return response(['status' => "OK"], 200);
         }
 
-
-        $company->save();
-
-
-
-        $request->session()->forget('company_profile');
+        return response(['status' => "ERROR"], 500);
 
 
 
-        return redirect()->route('company.index');
+        // return redirect()->route('company.index');
     }  //
 }
