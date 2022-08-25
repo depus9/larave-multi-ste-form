@@ -170,7 +170,7 @@
           <v-stepper-content step="2">
             <v-text-field
               v-model="company.contact_name"
-              label="Contact Name"
+              label="Contact Name*"
               name="contact_name"
               :error="$v.company.contact_name.$error"
               required
@@ -180,7 +180,7 @@
             >
             <v-text-field
               v-model="company.contact_email"
-              label="Contact Email"
+              label="Contact Email*"
               name="contact_email"
               :error="$v.company.contact_email.$error"
               required
@@ -190,7 +190,7 @@
             >
             <v-text-field
               v-model="company.contact_phone"
-              label="Contact Phone"
+              label="Contact Phone*"
               name="contact_phone"
               :error="$v.company.contact_phone.$error"
               required
@@ -211,7 +211,7 @@
           <v-stepper-content step="3">
             <v-text-field
               v-model="company.company_name"
-              label="Company Name"
+              label="Company Name*"
               name="company_name"
               :error="$v.company.company_name.$error"
               required
@@ -221,7 +221,7 @@
             >
             <v-text-field
               v-model="company.company_address"
-              label="Company Address"
+              label="Company Address*"
               name="company_address"
               :error="$v.company.company_address.$error"
               required
@@ -231,7 +231,7 @@
             >
             <v-text-field
               v-model="company.company_email"
-              label="Company Email"
+              label="Company Email*"
               name="company_email"
               :error="$v.company.company_email.$error"
               required
@@ -241,7 +241,7 @@
             >
             <v-text-field
               v-model="company.company_phone"
-              label="Company Phone"
+              label="Company Phone*"
               name="company_phone"
               :error="$v.company.company_phone.$error"
               required
@@ -342,7 +342,9 @@
         </v-stepper-items>
         <v-row v-if="step == 5">
           <v-col>
-            <v-alert dense prominent type="success">Great Success!!</v-alert>
+            <v-alert dense prominent class="m-3" type="success"
+              >Data added successfully</v-alert
+            >
           </v-col>
         </v-row>
       </v-stepper>
@@ -455,16 +457,6 @@ export default {
           alert("Error");
         })
         .finally(() => {});
-    },
-    someAlert() {
-      alert("awesome alert");
-    },
-    clear() {
-      this.$v.$reset();
-      this.name = "";
-      this.email = "";
-      this.select = null;
-      this.checkbox = false;
     },
   },
   computed: {

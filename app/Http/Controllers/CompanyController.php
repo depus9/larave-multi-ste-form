@@ -25,7 +25,6 @@ class CompanyController extends Controller
     public function index()
 
     {
-
         $company_profile = Company::all();
 
         return view('company.index', compact('company_profile'));
@@ -51,7 +50,7 @@ class CompanyController extends Controller
 
 
 
-        return view('company.step-1', compact('company'));
+        return view('company.home', compact('company'));
     }
 
 

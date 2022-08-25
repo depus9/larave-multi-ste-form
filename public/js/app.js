@@ -2182,16 +2182,6 @@ var companyApi = new _services_company_company__WEBPACK_IMPORTED_MODULE_0__["def
       })["catch"](function (err) {
         alert("Error");
       })["finally"](function () {});
-    },
-    someAlert: function someAlert() {
-      alert("awesome alert");
-    },
-    clear: function clear() {
-      this.$v.$reset();
-      this.name = "";
-      this.email = "";
-      this.select = null;
-      this.checkbox = false;
     }
   },
   computed: {
@@ -39614,7 +39604,7 @@ var render = function render() {
     }
   }, [_c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
-      label: "Contact Name",
+      label: "Contact Name*",
       name: "contact_name",
       error: _vm.$v.company.contact_name.$error,
       required: ""
@@ -39632,7 +39622,7 @@ var render = function render() {
     }
   }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
-      label: "Contact Email",
+      label: "Contact Email*",
       name: "contact_email",
       error: _vm.$v.company.contact_email.$error,
       required: ""
@@ -39650,7 +39640,7 @@ var render = function render() {
     }
   }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
-      label: "Contact Phone",
+      label: "Contact Phone*",
       name: "contact_phone",
       error: _vm.$v.company.contact_phone.$error,
       required: ""
@@ -39690,7 +39680,7 @@ var render = function render() {
     }
   }, [_c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
-      label: "Company Name",
+      label: "Company Name*",
       name: "company_name",
       error: _vm.$v.company.company_name.$error,
       required: ""
@@ -39708,7 +39698,7 @@ var render = function render() {
     }
   }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
-      label: "Company Address",
+      label: "Company Address*",
       name: "company_address",
       error: _vm.$v.company.company_address.$error,
       required: ""
@@ -39726,7 +39716,7 @@ var render = function render() {
     }
   }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
-      label: "Company Email",
+      label: "Company Email*",
       name: "company_email",
       error: _vm.$v.company.company_email.$error,
       required: ""
@@ -39744,7 +39734,7 @@ var render = function render() {
     }
   }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
-      label: "Company Phone",
+      label: "Company Phone*",
       name: "company_phone",
       error: _vm.$v.company.company_phone.$error,
       required: ""
@@ -39809,12 +39799,13 @@ var render = function render() {
       click: _vm.submit
     }
   }, [_vm._v(" Submit ")])], 1)], 1), _vm._v(" "), _vm.step == 5 ? _c(vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_0__["default"], [_c(vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_1__["default"], [_c(vuetify_lib_components_VAlert__WEBPACK_IMPORTED_MODULE_14__["default"], {
+    staticClass: "m-3",
     attrs: {
       dense: "",
       prominent: "",
       type: "success"
     }
-  }, [_vm._v("Great Success!!")])], 1)], 1) : _vm._e()], 1)], 1)], 1);
+  }, [_vm._v("Data added successfully")])], 1)], 1) : _vm._e()], 1)], 1)], 1);
 };
 
 var staticRenderFns = [];
