@@ -2068,13 +2068,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuelidate */ "./node_modules/vuelidate/lib/index.js");
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
 /* harmony import */ var _services_company_company__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/company/company */ "./resources/js/services/company/company.js");
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 
 
 
 var companyApi = new _services_company_company__WEBPACK_IMPORTED_MODULE_0__["default"]();
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_defineProperty({
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mixins: [vuelidate__WEBPACK_IMPORTED_MODULE_1__.validationMixin],
   validations: {
     company: {
@@ -2089,26 +2087,45 @@ var companyApi = new _services_company_company__WEBPACK_IMPORTED_MODULE_0__["def
       },
       company_status: {
         required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.required
+      },
+      contact_name: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.required
+      },
+      contact_email: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.required,
+        email: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.email
+      },
+      contact_phone: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.required,
+        numeric: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.numeric
+      },
+      company_name: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.required
+      },
+      company_address: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.required
+      },
+      company_email: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.required,
+        email: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.email
+      },
+      company_phone: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.required,
+        numeric: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__.numeric
       }
     }
   },
   data: function data() {
     return {
-      companyRenewalDate: "",
-      companyExpiryDate: "",
-      companyRegisterDate: "",
       step: 1,
       valid: true,
       menu1: false,
       menu2: false,
       menu3: false,
-      companyLevel: [],
-      isPremium: "",
-      companyStatus: "",
       company: {
         company_status: "",
         accreditation_level: [],
-        company_is_premium: "premium",
+        company_is_premium: "",
         company_register_date: "",
         company_expiry_date: "",
         company_renewal_date: "",
@@ -2121,15 +2138,6 @@ var companyApi = new _services_company_company__WEBPACK_IMPORTED_MODULE_0__["def
         company_phone: ""
       }
     };
-  },
-  computed: {
-    nameErrors: function nameErrors() {
-      var errors = [];
-      if (!this.$v.companyStatus.$dirty) return errors;
-      !this.$v.companyStatus.maxLength && errors.push("Name must be at most 10 characters long");
-      !this.$v.companyStatus.required && errors.push("Name is required.");
-      return errors;
-    }
   },
   methods: {
     stepFirst: function stepFirst() {
@@ -2144,26 +2152,33 @@ var companyApi = new _services_company_company__WEBPACK_IMPORTED_MODULE_0__["def
       }
     },
     stepSecond: function stepSecond() {
-      this.$v.company.company_register_date.$touch();
+      this.$v.company.contact_name.$touch();
+      this.$v.company.contact_email.$touch();
+      this.$v.company.contact_phone.$touch();
 
-      if (this.$v.company.company_register_date.$invalid) {
+      if (this.$v.company.contact_name.$invalid || this.$v.company.contact_email.$invalid || this.$v.company.contact_phone.$invalid) {
         return false;
       } else {
         return this.step = 3;
       }
     },
     stepThird: function stepThird() {
-      this.$v.company.company_register_date.$touch();
+      this.$v.company.company_name.$touch();
+      this.$v.company.company_email.$touch();
+      this.$v.company.company_phone.$touch();
+      this.$v.company.company_address.$touch();
 
-      if (this.$v.company.company_register_date.$invalid) {
+      if (this.$v.company.company_name.$invalid || this.$v.company.company_address.$invalid || this.$v.company.company_email.$invalid || this.$v.company.company_phone.$invalid) {
         return false;
       } else {
         return this.step = 4;
       }
     },
     submit: function submit() {
+      var _this = this;
+
       companyApi.create(this.company).then(function (response) {
-        alert("Data inserted successfully");
+        _this.step = 5;
       })["catch"](function (err) {
         alert("Error");
       })["finally"](function () {});
@@ -2178,12 +2193,13 @@ var companyApi = new _services_company_company__WEBPACK_IMPORTED_MODULE_0__["def
       this.select = null;
       this.checkbox = false;
     }
+  },
+  computed: {
+    items: function items() {
+      return ["Active", "Inactive"];
+    }
   }
-}, "computed", {
-  items: function items() {
-    return ["Active", "Inactive"];
-  }
-}));
+});
 
 /***/ }),
 
@@ -2206,13 +2222,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
- * Service to call HTTP request via Axios
+ * Request Axios
  */
 
 var ApiService = {
   init: function init() {
     vue__WEBPACK_IMPORTED_MODULE_2__["default"].use((axios__WEBPACK_IMPORTED_MODULE_0___default()));
-    (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.baseURL) = _config_config__WEBPACK_IMPORTED_MODULE_1__.API_URL;
+    (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.baseURL) = _config_config__WEBPACK_IMPORTED_MODULE_1__.APIURL;
   },
   post: function post(resource, params) {
     console.log(resource);
@@ -2247,23 +2263,7 @@ Vue.use((vuetify__WEBPACK_IMPORTED_MODULE_2___default())); //Validation Plugin I
 
 
 Vue.use(vuelidate__WEBPACK_IMPORTED_MODULE_3__["default"]);
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
 Vue.component("MultiStepForm", (__webpack_require__(/*! ./components/Company/MultiStepForm.vue */ "./resources/js/components/Company/MultiStepForm.vue")["default"]));
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
 var app = new Vue({
   vuetify: new (vuetify__WEBPACK_IMPORTED_MODULE_2___default())(),
   el: "#app"
@@ -2323,11 +2323,11 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "API_URL": () => (/* binding */ API_URL),
+/* harmony export */   "APIURL": () => (/* binding */ APIURL),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-var API_URL = "http://localhost:8000/";
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (API_URL);
+var APIURL = "http://localhost:8000/";
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (APIURL);
 
 /***/ }),
 
@@ -2390,6 +2390,30 @@ var companyServices = /*#__PURE__*/function () {
   return companyServices;
 }();
 
+
+
+/***/ }),
+
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-15.use[1]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-15.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-15.use[3]!./node_modules/vuetify/src/components/VAlert/VAlert.sass":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-15.use[1]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-15.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-15.use[3]!./node_modules/vuetify/src/components/VAlert/VAlert.sass ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".theme--light.v-alert .v-alert--prominent .v-alert__icon:after {\n  background: rgba(0, 0, 0, 0.12);\n}\n\n.theme--dark.v-alert .v-alert--prominent .v-alert__icon:after {\n  background: rgba(255, 255, 255, 0.12);\n}\n\n.v-sheet.v-alert {\n  border-radius: 4px;\n}\n.v-sheet.v-alert:not(.v-sheet--outlined) {\n  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);\n}\n.v-sheet.v-alert.v-sheet--shaped {\n  border-radius: 24px 4px;\n}\n\n.v-alert {\n  display: block;\n  font-size: 16px;\n  margin-bottom: 16px;\n  padding: 16px;\n  position: relative;\n  transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);\n}\n.v-alert:not(.v-sheet--tile) {\n  border-radius: 4px;\n}\n.v-application--is-ltr .v-alert > .v-icon,\n.v-application--is-ltr .v-alert > .v-alert__content {\n  margin-right: 16px;\n}\n.v-application--is-rtl .v-alert > .v-icon,\n.v-application--is-rtl .v-alert > .v-alert__content {\n  margin-left: 16px;\n}\n.v-application--is-ltr .v-alert > .v-icon + .v-alert__content {\n  margin-right: 0;\n}\n.v-application--is-rtl .v-alert > .v-icon + .v-alert__content {\n  margin-left: 0;\n}\n.v-application--is-ltr .v-alert > .v-alert__content + .v-icon {\n  margin-right: 0;\n}\n.v-application--is-rtl .v-alert > .v-alert__content + .v-icon {\n  margin-left: 0;\n}\n\n.v-alert__border {\n  border-style: solid;\n  border-width: 4px;\n  content: \"\";\n  position: absolute;\n}\n.v-alert__border:not(.v-alert__border--has-color) {\n  opacity: 0.26;\n}\n.v-alert__border--left, .v-alert__border--right {\n  bottom: 0;\n  top: 0;\n}\n.v-alert__border--bottom, .v-alert__border--top {\n  left: 0;\n  right: 0;\n}\n.v-alert__border--bottom {\n  border-bottom-left-radius: inherit;\n  border-bottom-right-radius: inherit;\n  bottom: 0;\n}\n.v-application--is-ltr .v-alert__border--left {\n  border-top-left-radius: inherit;\n  border-bottom-left-radius: inherit;\n  left: 0;\n}\n.v-application--is-rtl .v-alert__border--left {\n  border-top-right-radius: inherit;\n  border-bottom-right-radius: inherit;\n  right: 0;\n}\n.v-application--is-ltr .v-alert__border--right {\n  border-top-right-radius: inherit;\n  border-bottom-right-radius: inherit;\n  right: 0;\n}\n.v-application--is-rtl .v-alert__border--right {\n  border-top-left-radius: inherit;\n  border-bottom-left-radius: inherit;\n  left: 0;\n}\n.v-alert__border--top {\n  border-top-left-radius: inherit;\n  border-top-right-radius: inherit;\n  top: 0;\n}\n\n.v-alert__content {\n  flex: 1 1 auto;\n}\n\n.v-application--is-ltr .v-alert__dismissible {\n  margin: -16px -8px -16px 8px;\n}\n.v-application--is-rtl .v-alert__dismissible {\n  margin: -16px 8px -16px -8px;\n}\n\n.v-alert__icon {\n  align-self: flex-start;\n  border-radius: 50%;\n  height: 24px;\n  min-width: 24px;\n  position: relative;\n}\n.v-application--is-ltr .v-alert__icon {\n  margin-right: 16px;\n}\n.v-application--is-rtl .v-alert__icon {\n  margin-left: 16px;\n}\n.v-alert__icon.v-icon {\n  font-size: 24px;\n}\n\n.v-alert__wrapper {\n  align-items: center;\n  border-radius: inherit;\n  display: flex;\n}\n\n.v-application--is-ltr .v-alert--border.v-alert--prominent .v-alert__icon {\n  margin-left: 8px;\n}\n.v-application--is-rtl .v-alert--border.v-alert--prominent .v-alert__icon {\n  margin-right: 8px;\n}\n\n.v-alert--dense {\n  padding-top: 8px;\n  padding-bottom: 8px;\n}\n.v-alert--dense .v-alert__border {\n  border-width: medium;\n}\n\n.v-alert--outlined {\n  background: transparent !important;\n  border: thin solid currentColor !important;\n}\n.v-alert--outlined .v-alert__icon {\n  color: inherit !important;\n}\n\n.v-alert--prominent .v-alert__icon {\n  align-self: center;\n  height: 48px;\n  min-width: 48px;\n}\n.v-alert--prominent .v-alert__icon.v-icon {\n  font-size: 32px;\n}\n.v-alert--prominent .v-alert__icon.v-icon:after {\n  background: currentColor !important;\n  border-radius: 50%;\n  bottom: 0;\n  content: \"\";\n  left: 0;\n  opacity: 0.16;\n  position: absolute;\n  right: 0;\n  top: 0;\n}\n.v-alert--prominent.v-alert--dense .v-alert__icon.v-icon::after {\n  transform: scale(1);\n}\n\n.v-alert--text {\n  background: transparent !important;\n}\n.v-alert--text:before {\n  background-color: currentColor;\n  border-radius: inherit;\n  bottom: 0;\n  content: \"\";\n  left: 0;\n  opacity: 0.12;\n  position: absolute;\n  pointer-events: none;\n  right: 0;\n  top: 0;\n}", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
@@ -20726,6 +20750,36 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/src/components/VAlert/VAlert.sass":
+/*!****************************************************************!*\
+  !*** ./node_modules/vuetify/src/components/VAlert/VAlert.sass ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_15_use_1_postcss_loader_dist_cjs_js_clonedRuleSet_15_use_2_sass_loader_dist_cjs_js_clonedRuleSet_15_use_3_VAlert_sass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-15.use[1]!../../../../postcss-loader/dist/cjs.js??clonedRuleSet-15.use[2]!../../../../sass-loader/dist/cjs.js??clonedRuleSet-15.use[3]!./VAlert.sass */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-15.use[1]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-15.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-15.use[3]!./node_modules/vuetify/src/components/VAlert/VAlert.sass");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_15_use_1_postcss_loader_dist_cjs_js_clonedRuleSet_15_use_2_sass_loader_dist_cjs_js_clonedRuleSet_15_use_3_VAlert_sass__WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_15_use_1_postcss_loader_dist_cjs_js_clonedRuleSet_15_use_2_sass_loader_dist_cjs_js_clonedRuleSet_15_use_3_VAlert_sass__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -39232,6 +39286,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "render": () => (/* binding */ render),
 /* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
 /* harmony export */ });
+/* harmony import */ var vuetify_lib_components_VAlert__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! vuetify/lib/components/VAlert */ "./node_modules/vuetify/lib/components/VAlert/VAlert.js");
 /* harmony import */ var vuetify_lib_components_VBtn__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! vuetify/lib/components/VBtn */ "./node_modules/vuetify/lib/components/VBtn/VBtn.js");
 /* harmony import */ var vuetify_lib_components_VCheckbox__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vuetify/lib/components/VCheckbox */ "./node_modules/vuetify/lib/components/VCheckbox/VCheckbox.js");
 /* harmony import */ var vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuetify/lib/components/VGrid */ "./node_modules/vuetify/lib/components/VGrid/VCol.js");
@@ -39246,6 +39301,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuetify/lib/components/VStepper */ "./node_modules/vuetify/lib/components/VStepper/index.js");
 /* harmony import */ var vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuetify/lib/components/VStepper */ "./node_modules/vuetify/lib/components/VStepper/VStepperStep.js");
 /* harmony import */ var vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vuetify/lib/components/VTextField */ "./node_modules/vuetify/lib/components/VTextField/VTextField.js");
+
 
 
 
@@ -39278,7 +39334,7 @@ var render = function render() {
       },
       expression: "step"
     }
-  }, [_c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_3__.VStepperHeader, [_c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, [_vm.step < 5 ? _c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_3__.VStepperHeader, [_c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_4__["default"], {
     attrs: {
       step: "1"
     }
@@ -39294,7 +39350,7 @@ var render = function render() {
     attrs: {
       step: "4"
     }
-  }, [_vm._v("  Business summar ")])], 1), _vm._v(" "), _c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_3__.VStepperItems, [_c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_6__["default"], {
+  }, [_vm._v("  Business summar ")])], 1) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_3__.VStepperItems, [_c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_6__["default"], {
     attrs: {
       step: "1"
     }
@@ -39543,7 +39599,7 @@ var render = function render() {
     staticStyle: {
       color: "red"
     }
-  }, [_vm._v("This field is required")]) : _vm._e()], 1)], 1), _vm._v(" "), _c(vuetify_lib_components_VBtn__WEBPACK_IMPORTED_MODULE_12__["default"], {
+  }, [_vm._v("This field is required")]) : _vm._e()], 1)], 1), _vm._v(" "), _c(vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_0__["default"], [_c(vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_1__["default"], [_c(vuetify_lib_components_VBtn__WEBPACK_IMPORTED_MODULE_12__["default"], {
     staticClass: "mt-3",
     attrs: {
       dark: "",
@@ -39552,7 +39608,7 @@ var render = function render() {
     on: {
       click: _vm.stepFirst
     }
-  }, [_vm._v("\n            Next\n          ")])], 1), _vm._v(" "), _c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_6__["default"], {
+  }, [_vm._v("\n                Next\n              ")])], 1)], 1)], 1), _vm._v(" "), _c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_6__["default"], {
     attrs: {
       step: "2"
     }
@@ -39560,6 +39616,7 @@ var render = function render() {
     attrs: {
       label: "Contact Name",
       name: "contact_name",
+      error: _vm.$v.company.contact_name.$error,
       required: ""
     },
     model: {
@@ -39569,10 +39626,15 @@ var render = function render() {
       },
       expression: "company.contact_name"
     }
-  }), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
+  }), _vm._v(" "), _vm.$v.company.contact_name.$error ? _c("span", {
+    staticStyle: {
+      color: "red"
+    }
+  }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
       label: "Contact Email",
       name: "contact_email",
+      error: _vm.$v.company.contact_email.$error,
       required: ""
     },
     model: {
@@ -39582,10 +39644,15 @@ var render = function render() {
       },
       expression: "company.contact_email"
     }
-  }), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
+  }), _vm._v(" "), _vm.$v.company.contact_email.$error ? _c("span", {
+    staticStyle: {
+      color: "red"
+    }
+  }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
       label: "Contact Phone",
       name: "contact_phone",
+      error: _vm.$v.company.contact_phone.$error,
       required: ""
     },
     model: {
@@ -39595,7 +39662,11 @@ var render = function render() {
       },
       expression: "company.contact_phone"
     }
-  }), _vm._v(" "), _c(vuetify_lib_components_VBtn__WEBPACK_IMPORTED_MODULE_12__["default"], {
+  }), _vm._v(" "), _vm.$v.company.contact_phone.$error ? _c("span", {
+    staticStyle: {
+      color: "red"
+    }
+  }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_0__["default"], [_c(vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_1__["default"], [_c(vuetify_lib_components_VBtn__WEBPACK_IMPORTED_MODULE_12__["default"], {
     attrs: {
       dark: "",
       color: "warning"
@@ -39613,7 +39684,7 @@ var render = function render() {
     on: {
       click: _vm.stepSecond
     }
-  }, [_vm._v(" Continue ")])], 1), _vm._v(" "), _c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_6__["default"], {
+  }, [_vm._v("\n                Continue\n              ")])], 1)], 1)], 1), _vm._v(" "), _c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_6__["default"], {
     attrs: {
       step: "3"
     }
@@ -39621,6 +39692,7 @@ var render = function render() {
     attrs: {
       label: "Company Name",
       name: "company_name",
+      error: _vm.$v.company.company_name.$error,
       required: ""
     },
     model: {
@@ -39630,10 +39702,15 @@ var render = function render() {
       },
       expression: "company.company_name"
     }
-  }), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
+  }), _vm._v(" "), _vm.$v.company.company_name.$error ? _c("span", {
+    staticStyle: {
+      color: "red"
+    }
+  }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
       label: "Company Address",
       name: "company_address",
+      error: _vm.$v.company.company_address.$error,
       required: ""
     },
     model: {
@@ -39643,10 +39720,15 @@ var render = function render() {
       },
       expression: "company.company_address"
     }
-  }), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
+  }), _vm._v(" "), _vm.$v.company.company_address.$error ? _c("span", {
+    staticStyle: {
+      color: "red"
+    }
+  }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
       label: "Company Email",
       name: "company_email",
+      error: _vm.$v.company.company_email.$error,
       required: ""
     },
     model: {
@@ -39656,10 +39738,15 @@ var render = function render() {
       },
       expression: "company.company_email"
     }
-  }), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
+  }), _vm._v(" "), _vm.$v.company.company_email.$error ? _c("span", {
+    staticStyle: {
+      color: "red"
+    }
+  }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_10__["default"], {
     attrs: {
       label: "Company Phone",
       name: "company_phone",
+      error: _vm.$v.company.company_phone.$error,
       required: ""
     },
     model: {
@@ -39669,7 +39756,11 @@ var render = function render() {
       },
       expression: "company.company_phone"
     }
-  }), _vm._v(" "), _c(vuetify_lib_components_VBtn__WEBPACK_IMPORTED_MODULE_12__["default"], {
+  }), _vm._v(" "), _vm.$v.company.company_phone.$error ? _c("span", {
+    staticStyle: {
+      color: "red"
+    }
+  }, [_vm._v("This field is required")]) : _vm._e(), _vm._v(" "), _c(vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_0__["default"], [_c(vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_1__["default"], [_c(vuetify_lib_components_VBtn__WEBPACK_IMPORTED_MODULE_12__["default"], {
     attrs: {
       dark: "",
       color: "warning"
@@ -39687,7 +39778,7 @@ var render = function render() {
     on: {
       click: _vm.stepThird
     }
-  }, [_vm._v(" Continue ")])], 1), _vm._v(" "), _c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_6__["default"], {
+  }, [_vm._v("\n                Continue\n              ")])], 1)], 1)], 1), _vm._v(" "), _c(vuetify_lib_components_VStepper__WEBPACK_IMPORTED_MODULE_6__["default"], {
     attrs: {
       step: "4"
     }
@@ -39695,7 +39786,7 @@ var render = function render() {
     scopedSlots: _vm._u([{
       key: "default",
       fn: function fn() {
-        return [_c("tbody", [_c("tr", [_c("th", [_vm._v("Status")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_status))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Is Company a Premium")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_is_premium))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Accreditation Level:")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.accreditation_level))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Registration")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_register_date))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Expiry")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_expiry_date))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Renewal Date")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_renewal_date))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Contact Name")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.contact_name))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Contact Email")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.contact_email))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Contact Phone")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.contact_phone))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Company Name")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_name))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Company Email")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_email))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Company Address")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_address))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Company Phone")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_phone))])])])];
+        return [_c("tbody", [_c("tr", [_c("th", [_vm._v("Status")]), _vm._v(" "), _c("td", [_vm._v("\n                    " + _vm._s(_vm.company.company_status ? _vm.company.company_status : "Inactive") + "\n                  ")])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Is Company a Premium")]), _vm._v(" "), _c("td", [_vm._v("\n                    " + _vm._s(_vm.company.company_is_premium ? _vm.company.company_is_premium : "Non Premium") + "\n                  ")])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Accreditation Level:")]), _vm._v(" "), _c("td", [_vm._v("\n                    " + _vm._s(_vm.company.accreditation_level.length ? _vm.company.accreditation_level : "Level Not defined") + "\n                  ")])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Registration")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_register_date))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Expiry")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_expiry_date))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Renewal Date")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_renewal_date))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Contact Name")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.contact_name))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Contact Email")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.contact_email))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Contact Phone")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.contact_phone))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Company Name")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_name))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Company Email")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_email))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Company Address")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_address))])]), _vm._v(" "), _c("tr", [_c("th", [_vm._v("Company Phone")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.company.company_phone))])])])];
       },
       proxy: true
     }])
@@ -39717,7 +39808,13 @@ var render = function render() {
     on: {
       click: _vm.submit
     }
-  }, [_vm._v(" Submit ")])], 1)], 1)], 1)], 1)], 1);
+  }, [_vm._v(" Submit ")])], 1)], 1), _vm._v(" "), _vm.step == 5 ? _c(vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_0__["default"], [_c(vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_1__["default"], [_c(vuetify_lib_components_VAlert__WEBPACK_IMPORTED_MODULE_14__["default"], {
+    attrs: {
+      dense: "",
+      prominent: "",
+      type: "success"
+    }
+  }, [_vm._v("Great Success!!")])], 1)], 1) : _vm._e()], 1)], 1)], 1);
 };
 
 var staticRenderFns = [];
@@ -86177,6 +86274,257 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_vue__;
 
 /***/ }),
 
+/***/ "./node_modules/vuetify/lib/components/VAlert/VAlert.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/vuetify/lib/components/VAlert/VAlert.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _src_components_VAlert_VAlert_sass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../src/components/VAlert/VAlert.sass */ "./node_modules/vuetify/src/components/VAlert/VAlert.sass");
+/* harmony import */ var _VSheet__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../VSheet */ "./node_modules/vuetify/lib/components/VSheet/index.js");
+/* harmony import */ var _VBtn__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../VBtn */ "./node_modules/vuetify/lib/components/VBtn/index.js");
+/* harmony import */ var _VIcon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../VIcon */ "./node_modules/vuetify/lib/components/VIcon/index.js");
+/* harmony import */ var _mixins_toggleable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../mixins/toggleable */ "./node_modules/vuetify/lib/mixins/toggleable/index.js");
+/* harmony import */ var _mixins_themeable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../mixins/themeable */ "./node_modules/vuetify/lib/mixins/themeable/index.js");
+/* harmony import */ var _mixins_transitionable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../mixins/transitionable */ "./node_modules/vuetify/lib/mixins/transitionable/index.js");
+/* harmony import */ var _util_mixins__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../util/mixins */ "./node_modules/vuetify/lib/util/mixins.js");
+/* harmony import */ var _util_console__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../util/console */ "./node_modules/vuetify/lib/util/console.js");
+// Styles
+ // Extensions
+
+ // Components
+
+
+ // Mixins
+
+
+
+ // Utilities
+
+
+
+/* @vue/component */
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_util_mixins__WEBPACK_IMPORTED_MODULE_1__["default"])(_VSheet__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_toggleable__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_transitionable__WEBPACK_IMPORTED_MODULE_4__["default"]).extend({
+  name: 'v-alert',
+  props: {
+    border: {
+      type: String,
+
+      validator(val) {
+        return ['top', 'right', 'bottom', 'left'].includes(val);
+      }
+
+    },
+    closeLabel: {
+      type: String,
+      default: '$vuetify.close'
+    },
+    coloredBorder: Boolean,
+    dense: Boolean,
+    dismissible: Boolean,
+    closeIcon: {
+      type: String,
+      default: '$cancel'
+    },
+    icon: {
+      default: '',
+      type: [Boolean, String],
+
+      validator(val) {
+        return typeof val === 'string' || val === false;
+      }
+
+    },
+    outlined: Boolean,
+    prominent: Boolean,
+    text: Boolean,
+    type: {
+      type: String,
+
+      validator(val) {
+        return ['info', 'error', 'success', 'warning'].includes(val);
+      }
+
+    },
+    value: {
+      type: Boolean,
+      default: true
+    }
+  },
+  computed: {
+    __cachedBorder() {
+      if (!this.border) return null;
+      let data = {
+        staticClass: 'v-alert__border',
+        class: {
+          [`v-alert__border--${this.border}`]: true
+        }
+      };
+
+      if (this.coloredBorder) {
+        data = this.setBackgroundColor(this.computedColor, data);
+        data.class['v-alert__border--has-color'] = true;
+      }
+
+      return this.$createElement('div', data);
+    },
+
+    __cachedDismissible() {
+      if (!this.dismissible) return null;
+      const color = this.iconColor;
+      return this.$createElement(_VBtn__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        staticClass: 'v-alert__dismissible',
+        props: {
+          color,
+          icon: true,
+          small: true
+        },
+        attrs: {
+          'aria-label': this.$vuetify.lang.t(this.closeLabel)
+        },
+        on: {
+          click: () => this.isActive = false
+        }
+      }, [this.$createElement(_VIcon__WEBPACK_IMPORTED_MODULE_6__["default"], {
+        props: {
+          color
+        }
+      }, this.closeIcon)]);
+    },
+
+    __cachedIcon() {
+      if (!this.computedIcon) return null;
+      return this.$createElement(_VIcon__WEBPACK_IMPORTED_MODULE_6__["default"], {
+        staticClass: 'v-alert__icon',
+        props: {
+          color: this.iconColor
+        }
+      }, this.computedIcon);
+    },
+
+    classes() {
+      const classes = { ..._VSheet__WEBPACK_IMPORTED_MODULE_2__["default"].options.computed.classes.call(this),
+        'v-alert--border': Boolean(this.border),
+        'v-alert--dense': this.dense,
+        'v-alert--outlined': this.outlined,
+        'v-alert--prominent': this.prominent,
+        'v-alert--text': this.text
+      };
+
+      if (this.border) {
+        classes[`v-alert--border-${this.border}`] = true;
+      }
+
+      return classes;
+    },
+
+    computedColor() {
+      return this.color || this.type;
+    },
+
+    computedIcon() {
+      if (this.icon === false) return false;
+      if (typeof this.icon === 'string' && this.icon) return this.icon;
+      if (!['error', 'info', 'success', 'warning'].includes(this.type)) return false;
+      return `$${this.type}`;
+    },
+
+    hasColoredIcon() {
+      return this.hasText || Boolean(this.border) && this.coloredBorder;
+    },
+
+    hasText() {
+      return this.text || this.outlined;
+    },
+
+    iconColor() {
+      return this.hasColoredIcon ? this.computedColor : undefined;
+    },
+
+    isDark() {
+      if (this.type && !this.coloredBorder && !this.outlined) return true;
+      return _mixins_themeable__WEBPACK_IMPORTED_MODULE_7__["default"].options.computed.isDark.call(this);
+    }
+
+  },
+
+  created() {
+    /* istanbul ignore next */
+    if (this.$attrs.hasOwnProperty('outline')) {
+      (0,_util_console__WEBPACK_IMPORTED_MODULE_8__.breaking)('outline', 'outlined', this);
+    }
+  },
+
+  methods: {
+    genWrapper() {
+      const children = [this.$slots.prepend || this.__cachedIcon, this.genContent(), this.__cachedBorder, this.$slots.append, this.$scopedSlots.close ? this.$scopedSlots.close({
+        toggle: this.toggle
+      }) : this.__cachedDismissible];
+      const data = {
+        staticClass: 'v-alert__wrapper'
+      };
+      return this.$createElement('div', data, children);
+    },
+
+    genContent() {
+      return this.$createElement('div', {
+        staticClass: 'v-alert__content'
+      }, this.$slots.default);
+    },
+
+    genAlert() {
+      let data = {
+        staticClass: 'v-alert',
+        attrs: {
+          role: 'alert'
+        },
+        on: this.listeners$,
+        class: this.classes,
+        style: this.styles,
+        directives: [{
+          name: 'show',
+          value: this.isActive
+        }]
+      };
+
+      if (!this.coloredBorder) {
+        const setColor = this.hasText ? this.setTextColor : this.setBackgroundColor;
+        data = setColor(this.computedColor, data);
+      }
+
+      return this.$createElement('div', data, [this.genWrapper()]);
+    },
+
+    /** @public */
+    toggle() {
+      this.isActive = !this.isActive;
+    }
+
+  },
+
+  render(h) {
+    const render = this.genAlert();
+    if (!this.transition) return render;
+    return h('transition', {
+      props: {
+        name: this.transition,
+        origin: this.origin,
+        mode: this.mode
+      }
+    }, [render]);
+  }
+
+}));
+//# sourceMappingURL=VAlert.js.map
+
+/***/ }),
+
 /***/ "./node_modules/vuetify/lib/components/VAvatar/VAvatar.js":
 /*!****************************************************************!*\
   !*** ./node_modules/vuetify/lib/components/VAvatar/VAvatar.js ***!
@@ -98823,6 +99171,31 @@ function factory(prop = 'value', event = 'input') {
 
 const Toggleable = factory();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Toggleable);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/mixins/transitionable/index.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/vuetify/lib/mixins/transitionable/index.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (vue__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
+  name: 'transitionable',
+  props: {
+    mode: String,
+    origin: String,
+    transition: String
+  }
+}));
 //# sourceMappingURL=index.js.map
 
 /***/ }),

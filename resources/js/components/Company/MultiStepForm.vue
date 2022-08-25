@@ -2,7 +2,7 @@
   <v-row>
     <v-col lg="12">
       <v-stepper v-model="step">
-        <v-stepper-header>
+        <v-stepper-header v-if="step < 5">
           <v-stepper-step step="1">&nbsp; Business Details </v-stepper-step>
 
           <v-divider></v-divider>
@@ -158,9 +158,13 @@
                 >
               </v-col>
             </v-row>
-            <v-btn dark color="primary" class="mt-3" @click="stepFirst">
-              Next
-            </v-btn>
+            <v-row>
+              <v-col>
+                <v-btn dark color="primary" class="mt-3" @click="stepFirst">
+                  Next
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-stepper-content>
 
           <v-stepper-content step="2">
@@ -168,22 +172,40 @@
               v-model="company.contact_name"
               label="Contact Name"
               name="contact_name"
+              :error="$v.company.contact_name.$error"
               required
             ></v-text-field>
+            <span style="color: red" v-if="$v.company.contact_name.$error"
+              >This field is required</span
+            >
             <v-text-field
               v-model="company.contact_email"
               label="Contact Email"
               name="contact_email"
+              :error="$v.company.contact_email.$error"
               required
             ></v-text-field>
+            <span style="color: red" v-if="$v.company.contact_email.$error"
+              >This field is required</span
+            >
             <v-text-field
               v-model="company.contact_phone"
               label="Contact Phone"
               name="contact_phone"
+              :error="$v.company.contact_phone.$error"
               required
             ></v-text-field>
-            <v-btn dark @click="step = 1" color="warning">Previous</v-btn>
-            <v-btn dark color="primary" @click="stepSecond"> Continue </v-btn>
+            <span style="color: red" v-if="$v.company.contact_phone.$error"
+              >This field is required</span
+            >
+            <v-row>
+              <v-col>
+                <v-btn dark @click="step = 1" color="warning">Previous</v-btn>
+                <v-btn dark color="primary" @click="stepSecond">
+                  Continue
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-stepper-content>
 
           <v-stepper-content step="3">
@@ -191,28 +213,50 @@
               v-model="company.company_name"
               label="Company Name"
               name="company_name"
+              :error="$v.company.company_name.$error"
               required
             ></v-text-field>
+            <span style="color: red" v-if="$v.company.company_name.$error"
+              >This field is required</span
+            >
             <v-text-field
               v-model="company.company_address"
               label="Company Address"
               name="company_address"
+              :error="$v.company.company_address.$error"
               required
             ></v-text-field>
+            <span style="color: red" v-if="$v.company.company_address.$error"
+              >This field is required</span
+            >
             <v-text-field
               v-model="company.company_email"
               label="Company Email"
               name="company_email"
+              :error="$v.company.company_email.$error"
               required
             ></v-text-field>
+            <span style="color: red" v-if="$v.company.company_email.$error"
+              >This field is required</span
+            >
             <v-text-field
               v-model="company.company_phone"
               label="Company Phone"
               name="company_phone"
+              :error="$v.company.company_phone.$error"
               required
             ></v-text-field>
-            <v-btn dark @click="step = 2" color="warning">Previous</v-btn>
-            <v-btn dark color="primary" @click="stepThird"> Continue </v-btn>
+            <span style="color: red" v-if="$v.company.company_phone.$error"
+              >This field is required</span
+            >
+            <v-row>
+              <v-col>
+                <v-btn dark @click="step = 2" color="warning">Previous</v-btn>
+                <v-btn dark color="primary" @click="stepThird">
+                  Continue
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-stepper-content>
 
           <v-stepper-content step="4">
@@ -221,15 +265,33 @@
                 <tbody>
                   <tr>
                     <th>Status</th>
-                    <td>{{ company.company_status }}</td>
+                    <td>
+                      {{
+                        company.company_status
+                          ? company.company_status
+                          : "Inactive"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <th>Is Company a Premium</th>
-                    <td>{{ company.company_is_premium }}</td>
+                    <td>
+                      {{
+                        company.company_is_premium
+                          ? company.company_is_premium
+                          : "Non Premium"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <th>Accreditation Level:</th>
-                    <td>{{ company.accreditation_level }}</td>
+                    <td>
+                      {{
+                        company.accreditation_level.length
+                          ? company.accreditation_level
+                          : "Level Not defined"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <th>Registration</th>
@@ -278,6 +340,11 @@
             <v-btn color="primary" dark @click="submit"> Submit </v-btn>
           </v-stepper-content>
         </v-stepper-items>
+        <v-row v-if="step == 5">
+          <v-col>
+            <v-alert dense prominent type="success">Great Success!!</v-alert>
+          </v-col>
+        </v-row>
       </v-stepper>
     </v-col>
   </v-row>
@@ -298,24 +365,25 @@ export default {
       company_expiry_date: { required },
       company_renewal_date: { required },
       company_status: { required },
+      contact_name: { required },
+      contact_email: { required, email },
+      contact_phone: { required, numeric },
+      company_name: { required },
+      company_address: { required },
+      company_email: { required, email },
+      company_phone: { required, numeric },
     },
   },
   data: () => ({
-    companyRenewalDate: "",
-    companyExpiryDate: "",
-    companyRegisterDate: "",
     step: 1,
     valid: true,
     menu1: false,
     menu2: false,
     menu3: false,
-    companyLevel: [],
-    isPremium: "",
-    companyStatus: "",
     company: {
       company_status: "",
       accreditation_level: [],
-      company_is_premium: "premium",
+      company_is_premium: "",
       company_register_date: "",
       company_expiry_date: "",
       company_renewal_date: "",
@@ -328,17 +396,6 @@ export default {
       company_phone: "",
     },
   }),
-
-  computed: {
-    nameErrors() {
-      const errors = [];
-      if (!this.$v.companyStatus.$dirty) return errors;
-      !this.$v.companyStatus.maxLength &&
-        errors.push("Name must be at most 10 characters long");
-      !this.$v.companyStatus.required && errors.push("Name is required.");
-      return errors;
-    },
-  },
 
   methods: {
     stepFirst() {
@@ -357,9 +414,15 @@ export default {
     },
 
     stepSecond() {
-      this.$v.company.company_register_date.$touch();
+      this.$v.company.contact_name.$touch();
+      this.$v.company.contact_email.$touch();
+      this.$v.company.contact_phone.$touch();
 
-      if (this.$v.company.company_register_date.$invalid) {
+      if (
+        this.$v.company.contact_name.$invalid ||
+        this.$v.company.contact_email.$invalid ||
+        this.$v.company.contact_phone.$invalid
+      ) {
         return false;
       } else {
         return (this.step = 3);
@@ -367,8 +430,16 @@ export default {
     },
 
     stepThird() {
-      this.$v.company.company_register_date.$touch();
-      if (this.$v.company.company_register_date.$invalid) {
+      this.$v.company.company_name.$touch();
+      this.$v.company.company_email.$touch();
+      this.$v.company.company_phone.$touch();
+      this.$v.company.company_address.$touch();
+      if (
+        this.$v.company.company_name.$invalid ||
+        this.$v.company.company_address.$invalid ||
+        this.$v.company.company_email.$invalid ||
+        this.$v.company.company_phone.$invalid
+      ) {
         return false;
       } else {
         return (this.step = 4);
@@ -378,7 +449,7 @@ export default {
       companyApi
         .create(this.company)
         .then((response) => {
-          alert("Data inserted successfully");
+          this.step = 5;
         })
         .catch((err) => {
           alert("Error");
