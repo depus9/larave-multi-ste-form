@@ -13,13 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('company_profile', 'CompanyController@index')->name('company_profile.index');
-Route::get('company_profile/create-step-one', 'CompanyController@createStepOne')->name('company_profile.create.step.one');
-Route::post('company_profile/create-step-one', 'CompanyController@postCreateStepOne')->name('company_profile.create.step.one.post');
-Route::get('company_profile/create-step-two', 'CompanyController@createStepTwo')->name('company_profile.create.step.two');
-Route::post('company_profile/create-step-two', 'CompanyController@postCreateStepTwo')->name('company_profile.create.step.two.post');
-Route::get('company_profile/create-step-three', 'CompanyController@createStepThree')->name('company_profile.create.step.three');
-Route::post('company_profile/create-step-three', 'CompanyController@postCreateStepThree')->name('company_profile.create.step.three.post');
+/**Step 1 */
+Route::get('/', [\App\Http\Controllers\CompanyController::class, 'index'])->name('company_profile.index');
+/**Step 2 */
+Route::get('company_profile/create-step-one', [\App\Http\Controllers\CompanyController::class, 'createStepOne'])->name('company.step.1');
+Route::post('company_profile/create-step-one', [\App\Http\Controllers\CompanyController::class, 'postCreateStepOne'])->name('company.step.1.post');
+/**Step 3 */
+Route::get('company_profile/create-step-two', [\App\Http\Controllers\CompanyController::class, 'createStepTwo'])->name('company.step.2');
+Route::post('company_profile/create-step-two', [\App\Http\Controllers\CompanyController::class, 'postCreateStepTwo'])->name('company.step.2.post');
+/**Step 4 */
+Route::get('company_profile/create-step-three', [\App\Http\Controllers\CompanyController::class, 'createStepThree'])->name('company.step.3');
+Route::post('company_profile/create-step-three', [\App\Http\Controllers\CompanyController::class, 'postCreateStepThree'])->name('company.step.3.post');
