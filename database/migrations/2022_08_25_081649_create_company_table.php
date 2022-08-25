@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('contact_email');
             $table->string('contact_phone');
             /*
-            Step 3 
+            Step 3  company info
             */
             $table->string('company_name');
             $table->string('company_address');

@@ -30,8 +30,6 @@ class CompanyController extends Controller
         return view('company.index', compact('company_profile'));
     }
 
-
-
     /**
 
      * Show the step One Form for creating a new company.
